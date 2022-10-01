@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:meu_carro_certo/session.dart';
 
 void main() {
   runApp(const MyApp());
@@ -163,7 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.only(top: 18.0, right: 160.0, bottom: 18.0, left: 160.0),
                           textStyle: const TextStyle(fontSize: 20),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Session session = Session();
+                          session.post({
+                            'username': 'leonardo.cech@catolicasc.edu.br',
+                            'password': 'adminadmin'
+                          });
+                        },
                         child: const Expanded(
                           child: Text(
                             'Entrar',
