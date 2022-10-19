@@ -54,18 +54,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.justify,
               ),
-              ListView(
-                children: [
-                  CarouselSlider.builder(
-                    options: CarouselOptions(height: 400),
-                    itemCount: urlImages.length,
-                    itemBuilder: (context, index, realIndex) {
-                      final urlImage = urlImages[index];
-                      return buildImage(urlImage, index);
-                    },
-                  )
-                ],
-              ),
+              // ListView(
+              //   children: [
+              //     CarouselSlider.builder(
+              //       options: CarouselOptions(height: 400),
+              //       itemCount: urlImages.length,
+              //       itemBuilder: (context, index, realIndex) {
+              //         final urlImage = urlImages[index];
+              //         return buildImage(urlImage, index);
+              //       },
+              //     )
+              //   ],
+              // ),
 
               // CARD 1
               GestureDetector(
@@ -220,12 +220,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  Widget buildImage(String urlImage, int index) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12),
-        color: Colors.white,
-        child: Image.network(
-          urlImage,
-          fit: BoxFit.cover,
-        ),
-      );
+  // Widget buildImage(String urlImage, int index) => Container(
+  //       margin: const EdgeInsets.symmetric(horizontal: 12),
+  //       color: Colors.white,
+  //       child: Image.network(
+  //         urlImage,
+  //         fit: BoxFit.cover,
+  //       ),
+  //     );
 }
