@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meu_carro_certo/cadastro.dart';
 import 'package:meu_carro_certo/home.dart';
-import 'package:meu_carro_certo/session.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -51,6 +52,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final emailCtrl = TextEditingController(),
+      passwordCtrl = TextEditingController();
+
+  Object? get result => null;
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -60,6 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
 
+    MediaQueryData queryData;
+    queryData = MediaQuery.of(context);
+
+    double maxWidth =
+        queryData.size.width < 500 ? queryData.size.width * 0.5 : 500;
+    double maxHeight = 500;
+
     return Scaffold(
         /*appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -67,110 +80,134 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),*/
         body: Container(
-            width: 10000,
+            width: queryData.size.width,
             decoration: const BoxDecoration(
                 image: DecorationImage(
               image: AssetImage("assets/images/login-bg.jpg"),
               fit: BoxFit.cover,
             )),
-            child: BackdropFilter(
+            child: Stack(children: [
+              BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: Container(
-                    decoration:
-                        BoxDecoration(color: Colors.white.withOpacity(0.0)),
-                    child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 230.0, right: 20.0, bottom: 230.0, left: 20.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(25.0),
-                              )),
-                          child: Column(
-                            children: [
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 40.0, bottom: 40.0),
-                                  child: Center(
-                                    child: Text('Meu Carro Certo',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 30)),
-                                  )),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Usuário',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                'exemplo@meucarrocerto.com',
-                                          ),
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 60.0, right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Senha',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            hintText: '********'),
-                                        style: TextStyle(fontSize: 18),
-                                        obscureText: true,
-                                        enableSuggestions: false,
-                                        autocorrect: false,
-                                      ))),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 60.0),
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromRGBO(255, 210, 84, 1),
-                                    padding: const EdgeInsets.only(
-                                        top: 18.0,
-                                        right: 160.0,
-                                        bottom: 18.0,
-                                        left: 160.0),
-                                    textStyle: const TextStyle(fontSize: 20),
-                                  ),
-                                  onPressed: () {
-                                    Session session = Session();
-                                    dynamic login = session.post({
-                                      'username':
-                                          'leonardo.cech@catolicasc.edu.br',
-                                      'password': 'adminadmin'
-                                    });
-                                    dynamic error = login['error'];
-                                    // Se não houver erro, redireciona para a página home
-                                    //if (error == null) {
-                                    //  _chamarHome(context);
-                                    //}
-                                  },
-                                  child: const Expanded(
-                                    child: Text(
-                                      'Entrar',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+              ),
+              Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      decoration:
+                          BoxDecoration(color: Colors.white.withOpacity(0.0)),
+                      child: Container(
+                        width: maxWidth,
+                        height: maxHeight,
+                        margin: const EdgeInsets.all(20.0),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(25.0),
+                            )),
+                        child: Column(
+                          children: [
+                            const Padding(
+                                padding:
+                                    EdgeInsets.only(top: 40.0, bottom: 40.0),
+                                child: Center(
+                                  child: Text('Meu Carro Certo',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 35)),
+                                )),
+                            const Padding(
+                                padding:
+                                    EdgeInsets.only(right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Usuário',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                        controller: emailCtrl,
+                                        decoration: const InputDecoration(
+                                          hintText: 'exemplo@meucarrocerto.com',
+                                        ),
+                                        style: const TextStyle(fontSize: 18)))),
+                            const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 60.0, right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Senha',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                      controller: passwordCtrl,
+                                      decoration: const InputDecoration(
+                                          hintText: '********'),
+                                      style: const TextStyle(fontSize: 18),
+                                      obscureText: true,
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                    ))),
+                            Container(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              margin: const EdgeInsets.only(top: 20.0),
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromRGBO(255, 210, 84, 1),
+                                  padding: const EdgeInsets.only(
+                                      top: 18.0,
+                                      right: 145.0,
+                                      bottom: 18.0,
+                                      left: 145.0),
+                                  textStyle: const TextStyle(fontSize: 20),
+                                ),
+                                onPressed: () async {
+                                  loadingDialog();
+                                  try {
+                                    final credential = await FirebaseAuth
+                                        .instance
+                                        .signInWithEmailAndPassword(
+                                            email: emailCtrl.text,
+                                            password: passwordCtrl.text);
+                                    if (kDebugMode) {
+                                      print(credential);
+                                    }
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop(result);
+                                    _chamarHome(context);
+                                  } on FirebaseAuthException catch (e) {
+                                    if (e.code == 'user-not-found') {
+                                      if (kDebugMode) {
+                                        print('No user found for that email.');
+                                      }
+                                    } else if (e.code == 'wrong-password') {
+                                      if (kDebugMode) {
+                                        print(
+                                            'Wrong password provided for that user.');
+                                      }
+                                    }
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop(result);
+                                    loginFailedDialog();
+                                  }
+                                },
+                                child: const Expanded(
+                                  child: Text(
+                                    'Entrar',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
-                              Padding(
+                            ),
+                            Padding(
                                 padding: const EdgeInsets.only(top: 20.0),
                                 child: Column(
                                   children: <Widget>[
@@ -185,18 +222,55 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: const Text('Sou novo por aqui'),
                                     ),
                                   ],
-                                ),
-                                // child: TextButton(
-                                //   'Sou novo por aqui',
-                                //   onPressed: () {},
-                                //   style: TextStyle(
-                                //     color: Colors.grey
-                                //   ),
-                                // )
-                              )
-                            ],
-                          ),
-                        ))))));
+                                ))
+                          ],
+                        ),
+                      )))
+            ])));
+  }
+
+  void loadingDialog() {
+    showDialog(
+        // The user CANNOT close this dialog  by pressing outside it
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Some text
+                  Text('Aguarde...')
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void loginFailedDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Falha no login'),
+        content: const Text('O usuário ou a senha estão incorretos'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

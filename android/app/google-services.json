@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "892375007218",
+    "project_id": "meucarrocerto-web",
+    "storage_bucket": "meucarrocerto-web.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892375007218:android:1b4d3f8cd88310bcd8356b",
+        "android_client_info": {
+          "package_name": "com.example.meu_carro_certo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892375007218-e5ak9mgvj6bm3a7hruioev7ojdpm5o21.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB-YEVLPwK8G-4vm8UaNnDqKJuvjFW2dM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "892375007218-e5ak9mgvj6bm3a7hruioev7ojdpm5o21.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

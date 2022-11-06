@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // /// // ...
+  // /// await Firebase.initializeApp(
+  // ///   options: DefaultFirebaseOptions.currentPlatform,
+  // /// );
   runApp(MaterialApp(
-      home: Login(),
+      home: const Login(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,

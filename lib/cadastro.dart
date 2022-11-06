@@ -1,13 +1,14 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:meu_carro_certo/home.dart';
-import 'home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'login.dart';
 
 class Cadastro extends StatelessWidget {
   const Cadastro({Key? key}) : super(key: key);
-
-  get children => null;
 
   // This widget is the root of your application.
   @override
@@ -28,7 +29,7 @@ class Cadastro extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "Quicksand",
       ),
-      home: const MyHomePage(title: 'Meu Carro Certo Login Page'),
+      home: const MyHomePage(title: 'Meu Carro Certo Sign in Page'),
     );
   }
 }
@@ -52,6 +53,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final fullnameCtrl = TextEditingController(),
+      emailCtrl = TextEditingController(),
+      passwordCtrl = TextEditingController(),
+      confirmPasswordCtrl = TextEditingController();
+
+  Object? get result => null;
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -60,6 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
+    MediaQueryData queryData;
+    queryData = MediaQuery.of(context);
+
+    double maxWidth =
+        queryData.size.width < 500 ? queryData.size.width * 0.5 : 500;
+    double maxHeight = 720;
+
     return Scaffold(
         /*appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -67,147 +83,273 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),*/
         body: Container(
-            width: 10000,
+            width: queryData.size.width,
             decoration: const BoxDecoration(
                 image: DecorationImage(
               image: AssetImage("assets/images/login-bg.jpg"),
               fit: BoxFit.cover,
             )),
-            child: BackdropFilter(
+            child: Stack(children: [
+              BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: Container(
-                    decoration:
-                        BoxDecoration(color: Colors.white.withOpacity(0.0)),
-                    child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 230.0, right: 20.0, bottom: 230.0, left: 20.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(25.0),
-                              )),
-                          child: Column(
-                            children: [
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 40.0, bottom: 40.0),
-                                  child: Center(
-                                    child: Text('Efetuar Cadastro',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 30)),
-                                  )),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Nome',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            hintText: 'Fulano de Tal'),
-                                        style: TextStyle(fontSize: 18),
-                                        obscureText: true,
-                                        enableSuggestions: false,
-                                        autocorrect: false,
-                                      ))),
-                              const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 60.0, right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Usuário',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                'exemplo@meucarrocerto.com',
-                                          ),
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 60.0, right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Senha',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            hintText: '********'),
-                                        style: TextStyle(fontSize: 18),
-                                        obscureText: true,
-                                        enableSuggestions: false,
-                                        autocorrect: false,
-                                      ))),
-                              const Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 60.0, right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('Confirmar senha',
-                                          style: TextStyle(fontSize: 18)))),
-                              const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 60.0, left: 60.0),
-                                  child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                            hintText: '********'),
-                                        style: TextStyle(fontSize: 18),
-                                        obscureText: true,
-                                        enableSuggestions: false,
-                                        autocorrect: false,
-                                      ))),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 60.0),
-                                  child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color.fromRGBO(
-                                            255, 210, 84, 1),
-                                        padding: const EdgeInsets.only(
-                                            top: 18.0,
-                                            right: 160.0,
-                                            bottom: 18.0,
-                                            left: 160.0),
-                                        textStyle:
-                                            const TextStyle(fontSize: 20),
-                                      ),
-                                      onPressed: () {
-                                        _chamarHome(context);
-                                      },
-                                      child: const Expanded(
-                                          child: Text(
-                                        'Cadastrar',
-                                        style: TextStyle(color: Colors.white),
-                                      )))),
-                            ],
-                          ),
-                        ))))));
+              ),
+              Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      decoration:
+                          BoxDecoration(color: Colors.white.withOpacity(0.0)),
+                      child: Container(
+                        width: maxWidth,
+                        height: maxHeight,
+                        margin: const EdgeInsets.all(20.0),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(25.0),
+                            )),
+                        child: Column(
+                          children: [
+                            const Padding(
+                                padding:
+                                    EdgeInsets.only(top: 40.0, bottom: 40.0),
+                                child: Center(
+                                  child: Text('Cadastrar-se',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 35)),
+                                )),
+                            const Padding(
+                                padding:
+                                    EdgeInsets.only(right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Nome completo',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                        controller: fullnameCtrl,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Fulano de Tal',
+                                        ),
+                                        style: const TextStyle(fontSize: 18)))),
+                            const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 60.0, right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Usuário',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                        controller: emailCtrl,
+                                        decoration: const InputDecoration(
+                                          hintText: 'exemplo@meucarrocerto.com',
+                                        ),
+                                        style: const TextStyle(fontSize: 18)))),
+                            const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 60.0, right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Senha',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                      controller: passwordCtrl,
+                                      decoration: const InputDecoration(
+                                          hintText: '********'),
+                                      style: const TextStyle(fontSize: 18),
+                                      obscureText: true,
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                    ))),
+                            const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 60.0, right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Confirmar a senha',
+                                        style: TextStyle(fontSize: 18)))),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 60.0, left: 60.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextField(
+                                      controller: confirmPasswordCtrl,
+                                      decoration: const InputDecoration(
+                                          hintText: '********'),
+                                      style: const TextStyle(fontSize: 18),
+                                      obscureText: true,
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                    ))),
+                            Container(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              margin: const EdgeInsets.only(top: 20.0),
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromRGBO(255, 210, 84, 1),
+                                  padding: const EdgeInsets.only(
+                                      top: 18.0,
+                                      right: 145.0,
+                                      bottom: 18.0,
+                                      left: 145.0),
+                                  textStyle: const TextStyle(fontSize: 20),
+                                ),
+                                onPressed: () async {
+                                  if (passwordCtrl.text ==
+                                      confirmPasswordCtrl.text) {
+                                    loadingDialog();
+
+                                    try {
+                                      final credential = await FirebaseAuth
+                                          .instance
+                                          .createUserWithEmailAndPassword(
+                                        email: emailCtrl.text,
+                                        password: passwordCtrl.text,
+                                      );
+                                      if (kDebugMode) {
+                                        print(credential);
+                                      }
+                                      var db = FirebaseFirestore.instance;
+
+                                      final user = <String, dynamic>{
+                                        "fullname": fullnameCtrl.text,
+                                        "email": emailCtrl.text
+                                      };
+
+                                      try {
+                                        // Add a new document with a generated ID
+                                        db.collection("users").add(user).then(
+                                            (DocumentReference doc) => print(
+                                                'DocumentSnapshot added with ID: ${doc.id}'));
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop(result);
+
+                                        _chamarLogin(context);
+                                      } catch (e) {
+                                        if (kDebugMode) {
+                                          print(
+                                              'Error on save user in Firestore collection "users"');
+                                        }
+                                      }
+                                    } on FirebaseAuthException catch (e) {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(result);
+
+                                      if (e.code == 'weak-password') {
+                                        if (kDebugMode) {
+                                          print(
+                                              'The password provided is too weak.');
+                                        }
+
+                                        String title = 'Falha ao cadastrar',
+                                            content =
+                                                'A senha expecificada é muito fraca!';
+                                        signupFailedDialog(title, content);
+                                      } else if (e.code ==
+                                          'email-already-in-use') {
+                                        if (kDebugMode) {
+                                          print(
+                                              'The account already exists for that email.');
+
+                                          String title = 'Falha ao cadastrar',
+                                              content =
+                                                  'Já existe um usuário com esse e-mail';
+                                          signupFailedDialog(title, content);
+                                        }
+                                      }
+                                    } catch (e) {
+                                      if (kDebugMode) {
+                                        print(e);
+                                      }
+                                    }
+                                  } else {
+                                    String title = 'Falha ao cadastrar',
+                                        content =
+                                            'As senhas não são iguais, verifique e tente novamente.';
+                                    signupFailedDialog(title, content);
+                                  }
+                                },
+                                child: const Expanded(
+                                  child: Text(
+                                    'Enviar',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )))
+            ])));
+  }
+
+  void loadingDialog() {
+    showDialog(
+        // The user CANNOT close this dialog  by pressing outside it
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Some text
+                  Text('Cadastrando usuário, aguarde...')
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void signupFailedDialog(String title, String content) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-_chamarHome(BuildContext context) {
+_chamarLogin(BuildContext context) {
   Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Home(),
+        builder: (context) => const Login(),
       ));
 }
