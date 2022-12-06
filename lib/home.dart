@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -122,47 +121,45 @@ class _MyHomePageState extends State<MyHomePage> {
                   elevation: 10,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  margin: EdgeInsets.all(20.0),
-                  child: Container(
-                    child: Column(
-                      children: [
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Além disso, podemos buscar para você o Carro Certo!',
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
+                  margin: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Além disso, podemos buscar para você o Carro Certo!',
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const Text(
+                        "E para você que precisa de um auxilio extra temos a Consultoria Plus para te auxiliar. Personalizando seu atendimento via contato pessoal.",
+                        style: TextStyle(fontSize: 23),
+                        textAlign: TextAlign.justify,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 60.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(255, 210, 84, 1),
+                            padding: const EdgeInsets.only(
+                                top: 18.0,
+                                right: 160.0,
+                                bottom: 18.0,
+                                left: 160.0),
+                            textStyle: const TextStyle(fontSize: 20),
                           ),
-                        ),
-                        const Text(
-                          "E para você que precisa de um auxilio extra temos a Consultoria Plus para te auxiliar. Personalizando seu atendimento via contato pessoal.",
-                          style: TextStyle(fontSize: 23),
-                          textAlign: TextAlign.justify,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 60.0),
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(255, 210, 84, 1),
-                              padding: const EdgeInsets.only(
-                                  top: 18.0,
-                                  right: 160.0,
-                                  bottom: 18.0,
-                                  left: 160.0),
-                              textStyle: const TextStyle(fontSize: 20),
-                            ),
-                            onPressed: () {},
-                            child: const Expanded(
-                              child: Text(
-                                'Acessar',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                          onPressed: () {},
+                          child: const Expanded(
+                            child: Text(
+                              'Acessar',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
