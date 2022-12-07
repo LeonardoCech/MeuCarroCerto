@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
+import 'package:meu_carro_certo/resultado.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -19,7 +19,7 @@ void main() async {
   // ///   options: DefaultFirebaseOptions.currentPlatform,
   // /// );
   runApp(MaterialApp(
-      home: const Login(),
+      home: const Resultado(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,

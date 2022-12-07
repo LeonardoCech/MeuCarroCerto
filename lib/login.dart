@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     queryData = MediaQuery.of(context);
 
     double maxWidth =
-        queryData.size.width < 500 ? queryData.size.width * 0.5 : 500;
+        queryData.size.width < 500 ? queryData.size.width : 500;
     double maxHeight = 500;
 
     return Scaffold(
@@ -98,56 +98,63 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Container(
                         width: maxWidth,
                         height: maxHeight,
-                        margin: const EdgeInsets.all(20.0),
+                        margin: const EdgeInsets.only(
+                            top: 10.0,
+                            right: 20.0,
+                            bottom: 10.0,
+                            left: 20.0
+                        ),
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(
                               Radius.circular(25.0),
                             )),
-                        child: Column(
-                          children: [
+                        child: ListView(
+                            children: <Widget>[
                             const Padding(
                                 padding:
-                                    EdgeInsets.only(top: 40.0, bottom: 40.0),
+                                    EdgeInsets.only(top: 50.0, bottom: 40.0),
                                 child: Center(
                                   child: Text('Meu Carro Certo',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 35)),
+                                          fontSize: 30)),
                                 )),
                             const Padding(
                                 padding:
-                                    EdgeInsets.only(right: 60.0, left: 60.0),
+                                    EdgeInsets.only(right: 40.0, left: 40.0),
                                 child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text('Usuário',
                                         style: TextStyle(fontSize: 18)))),
                             Padding(
                                 padding: const EdgeInsets.only(
-                                    right: 60.0, left: 60.0),
+                                    right: 40.0, left: 40.0),
                                 child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: TextField(
                                         controller: emailCtrl,
+                                        scrollPadding: const EdgeInsets.only(bottom:40),
                                         decoration: const InputDecoration(
-                                          hintText: 'exemplo@meucarrocerto.com',
+                                          hintText: 'exemplo@mail.com',
                                         ),
                                         style: const TextStyle(fontSize: 18)))),
                             const Padding(
                                 padding: EdgeInsets.only(
-                                    top: 60.0, right: 60.0, left: 60.0),
+                                    top: 40.0, right: 40.0, left: 40.0),
                                 child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text('Senha',
                                         style: TextStyle(fontSize: 18)))),
                             Padding(
                                 padding: const EdgeInsets.only(
-                                    right: 60.0, left: 60.0),
+                                    right: 40.0, left: 40.0),
                                 child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: TextField(
                                       controller: passwordCtrl,
+                                      scrollPadding: const EdgeInsets.only(bottom:40),
                                       decoration: const InputDecoration(
                                           hintText: '********'),
                                       style: const TextStyle(fontSize: 18),
@@ -156,17 +163,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                       autocorrect: false,
                                     ))),
                             Container(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              margin: const EdgeInsets.only(top: 20.0),
+                              padding: const EdgeInsets.only(right: 40.0, left: 40.0),
+                              margin: const EdgeInsets.only(top: 40.0),
                               child: TextButton(
                                 style: TextButton.styleFrom(
                                   backgroundColor:
                                       const Color.fromRGBO(255, 210, 84, 1),
                                   padding: const EdgeInsets.only(
                                       top: 18.0,
-                                      right: 145.0,
+                                      right: 98.0,
                                       bottom: 18.0,
-                                      left: 145.0),
+                                      left: 98.0),
                                   textStyle: const TextStyle(fontSize: 20),
                                 ),
                                 onPressed: () async {
@@ -208,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
+                                padding: const EdgeInsets.only(top: 18.0),
                                 child: Column(
                                   children: <Widget>[
                                     TextButton(

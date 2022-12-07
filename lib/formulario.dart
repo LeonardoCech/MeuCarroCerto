@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:meu_carro_certo/resultado.dart';
 import 'package:multiselect/multiselect.dart';
 
 enum SingingCharacter { sim, nao, talvez }
@@ -30,6 +33,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  Object? get result => null;
+
   List<String> selectedResursos = [];
   List<String> selectedValores = [];
   List<String> selectedCarros = [];
@@ -45,34 +51,48 @@ class _MyHomePageState extends State<MyHomePage> {
   SingingCharacter? _characterConsumo = SingingCharacter.sim;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    MediaQueryData queryData;
+    queryData = MediaQuery.of(context);
+
+    double maxWidth = queryData.size.width < 500 ? queryData.size.width : 500;
+    double maxHeight = 500;
+
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 5,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            size: 30,
-            color: Colors.black,
-          ),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        ),
-        title: const Text(
-          'Meu Carro Certo',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: SingleChildScrollView(
-          child: Container(
-        margin: const EdgeInsets.all(16.0),
-        child: Form(
-          child: formUI(),
-        ),
-      )),
-    );
+        key: _scaffoldKey,
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Image.asset("assets/images/logo.png", scale: 3),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.person, color: Colors.black),
+                //onPressed: _pushSaved,
+                onPressed: () {},
+                tooltip: 'Editar usuário',
+              )
+            ]),
+        body: Container(
+            width: maxWidth,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage("assets/images/login-bg.jpg"),
+              fit: BoxFit.cover,
+            )),
+            child: Stack(children: [
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+              ),
+              SingleChildScrollView(
+                  child: Container(
+                margin: const EdgeInsets.all(16.0),
+                child: Form(
+                  child: formUI(),
+                ),
+              )),
+            ])));
   }
 
   formItemsDesign(icon, item) {
@@ -95,22 +115,32 @@ class _MyHomePageState extends State<MyHomePage> {
         //   ),
         //   onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         // ),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
-            child: Text(
-              "Nos conte sobre você...",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "O questionário foi criado pensando em perguntas exclusivas, onde analisaremos e definiremos o Carro Certo para você.",
-            style: TextStyle(fontSize: 14),
-            textAlign: TextAlign.justify,
+        GestureDetector(
+          child: Card(
+            elevation: 10,
+            color: const Color.fromRGBO(255, 210, 104, 0.8),
+            shape: const RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(Radius.circular(8.0))),
+            margin: const EdgeInsets.only(
+                top: 20.0, right: 5.0, bottom: 20.0, left: 5.0),
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(children: const [
+                  Text(
+                    "Nos conte sobre você...",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "O questionário foi criado pensando em perguntas exclusivas, onde analisaremos e definiremos o Carro Certo para você.",
+                    style: TextStyle(
+                        color: Colors.white, fontSize: 20),
+                    textAlign: TextAlign.justify,
+                  ),
+                ])),
           ),
         ),
 
@@ -118,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Icons.numbers,
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Idade',
+                labelText: 'Qual a sua idade?',
               ),
               keyboardType: TextInputType.number,
             )),
@@ -129,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListTile(
             title: const Text("Já possui carro próprio?"),
             subtitle: Padding(
-              padding: const EdgeInsets.only(top: 7.0),
+              padding: const EdgeInsets.only(top: 5.0),
               child: Row(
                 children: [
                   Expanded(
@@ -201,12 +231,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListTile(
             title: const Text("Tem confiança em comprar um carro sozinho(a)?"),
             subtitle: Padding(
-              padding: const EdgeInsets.only(top: 7.0),
+              padding: const EdgeInsets.only(top: 5.0),
               child: Row(
                 children: [
                   Expanded(
                     child: RadioListTile<SingingCharacter>(
-                      title: const Text('Sim'),
+                      title: const Text('Sim', style: TextStyle(fontSize: 13)),
                       value: SingingCharacter.sim,
                       groupValue: _characterComprarSozinho,
                       onChanged: (SingingCharacter? value) {
@@ -218,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Expanded(
                     child: RadioListTile<SingingCharacter>(
-                      title: const Text('Não'),
+                      title: const Text('Não', style: TextStyle(fontSize: 13)),
                       value: SingingCharacter.nao,
                       groupValue: _characterComprarSozinho,
                       onChanged: (SingingCharacter? value) {
@@ -227,10 +257,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),
-                  ),
+                  ), /*
                   Expanded(
                     child: RadioListTile<SingingCharacter>(
-                      title: const Text('Talvez'),
+                      title: const Text('Talvez', style: TextStyle(fontSize: 13)),
                       value: SingingCharacter.talvez,
                       groupValue: _characterComprarSozinho,
                       onChanged: (SingingCharacter? value) {
@@ -239,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),
-                  )
+                  )*/
                 ],
               ),
             ),
@@ -529,9 +559,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       selectedConsumo = x;
                     });
                   },
-                  options: const ['Até 15.0', 'De 16 a 20', "Mais"],
+                  options: const [
+                    'Menos de 12 Km/L',
+                    'Entre 13 e 17 Km/L',
+                    "Mais de 17 Km/L"
+                  ],
                   selectedValues: selectedConsumo,
-                  whenEmpty: 'Selecione a média de consumo (Por km)',
+                  whenEmpty: 'Selecione a média de consumo',
                 ),
               ),
             ),
@@ -542,8 +576,8 @@ class _MyHomePageState extends State<MyHomePage> {
           shadowColor: Colors.grey,
           margin: const EdgeInsets.symmetric(vertical: 16),
           child: ListTile(
-            title:
-                const Text("Qual faixa de valor do veículo que você procura?"),
+            title: const Text(
+                "Qual faixa de valor (Tabela FIPE) do veículo que você procura?"),
             subtitle: Padding(
               padding: const EdgeInsets.all(20.0),
               child: DropDownMultiSelect(
@@ -553,14 +587,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 options: const [
-                  'RS20.000',
-                  'RS30.000',
-                  'RS40.000',
-                  'RS50.000',
-                  "Mais"
+                  'Até R\$ 20.000',
+                  'Até R\$ 40.000',
+                  'Até R\$ 60.000',
+                  'Até R\$ 80.000',
+                  "Qualquer valor"
                 ],
                 selectedValues: selectedValores,
-                whenEmpty: 'Selecione as faixar de valor',
+                whenEmpty: 'Selecione as faixas de valor',
               ),
             ),
           ),
@@ -568,24 +602,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
         //BOTÃO DE ENVIO DE FORMULARIO
         GestureDetector(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            margin: const EdgeInsets.all(10.0),
-            alignment: Alignment.center,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0)),
-              color: const Color.fromRGBO(255, 210, 84, 1),
-            ),
-            child: const Text("Concluir",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w300)),
-          ),
-        )
+            onTap: () {},
+            child: Container(
+              //padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+              margin: const EdgeInsets.only(top: 20.0),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(255, 210, 84, 1),
+                  padding: const EdgeInsets.only(
+                      top: 18.0, right: 75.0, bottom: 18.0, left: 75.0),
+                  textStyle: const TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true)
+                      .pop(result);
+                  _chamarResultado(context);
+                },
+                child: const Expanded(
+                  child: Text(
+                    'Quero meu carro certo!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ))
       ],
     );
   }
+}
+
+_chamarResultado(BuildContext context) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Resultado(),
+      ));
 }
