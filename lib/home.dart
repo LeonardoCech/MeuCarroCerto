@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meu_carro_certo/formulario.dart';
 
@@ -29,6 +31,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+final emailCtrl = TextEditingController(),
+    nameCtrl = TextEditingController(),
+    passwordCtrl = TextEditingController();
+
 class _MyHomePageState extends State<MyHomePage> {
   final urlImages = [
     'assets/images/image1.jpg',
@@ -36,13 +42,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Object? get result => null;
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
 
     double maxWidth = queryData.size.width < 500 ? queryData.size.width : 500;
-    double maxHeight = 500;
 
     return Scaffold(
         appBar: AppBar(
@@ -51,12 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.person, color: Colors.black),
-                //onPressed: _pushSaved,
-                onPressed: () {},
+                icon: const Icon(Icons.settings, color: Colors.black),
+                onPressed: () => _key.currentState!.openEndDrawer(),
                 tooltip: 'Editar usuário',
               )
             ]),
+        key: _key,
+        endDrawer: userEdit(),
         body: Container(
             width: maxWidth,
             decoration: const BoxDecoration(
@@ -148,9 +156,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                             const TextStyle(fontSize: 20),
                                       ),
                                       onPressed: () {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop(result);
                                         _chamarFormulario(context);
                                       },
                                       child: const Expanded(
@@ -205,13 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         textStyle:
                                             const TextStyle(fontSize: 20),
                                       ),
-                                      onPressed: () {
-                                        /*
-                                        Navigator.of(context, rootNavigator: true)
-                                            .pop(result);
-                                        _chamarFormulario(context);
-                                        */
-                                      },
+                                      onPressed: () {},
                                       child: const Expanded(
                                         child: Text(
                                           'Em breve!',
@@ -287,6 +286,100 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ])));
   }
+}
+
+Widget userEdit() {
+  final currUserEmail = FirebaseAuth.instance.currentUser?.email;
+  var db = FirebaseFirestore.instance;
+
+  emailCtrl.text = currUserEmail!;
+
+  Future<void> getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await db.collection("users").where("email", isEqualTo: currUserEmail).get();
+
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    Map<String, dynamic> result = allData.first as Map<String, dynamic>;
+    nameCtrl.text = result['fullname'];
+  }
+
+  getData();
+
+  /*for (var doc in snapshot.data!.docs) {
+    print(doc.data() as Map<String, dynamic>);
+  }*/
+
+  return Drawer(
+      // Add a ListView to the drawer. This ensures the user can scroll
+      // through the options in the drawer if there isn't enough vertical
+      // space to fit everything.
+      child: ListView(
+    // Important: Remove any padding from the ListView.
+    padding: EdgeInsets.zero,
+    children: [
+      Card(
+        elevation: 10,
+        color: const Color.fromRGBO(255, 255, 255, 1),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        margin: const EdgeInsets.only(
+            top: 20.0, right: 15.0, bottom: 20.0, left: 15.0),
+        child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(children: [
+              const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Configurações",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  )),
+              const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Edite suas informações de usuário:",
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                    textAlign: TextAlign.justify,
+                  )),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: TextFormField(
+                  controller: nameCtrl,
+                  style: const TextStyle(fontSize: 14),
+                  decoration: const InputDecoration(
+                    labelText: 'Nome completo',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: TextFormField(
+                  controller: emailCtrl,
+                  style: const TextStyle(fontSize: 14),
+                  decoration: const InputDecoration(
+                    labelText: 'E-mail',
+                  ),
+                  enabled: false,
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: TextFormField(
+                    controller: passwordCtrl,
+                    style: const TextStyle(fontSize: 14),
+                    decoration: const InputDecoration(
+                      labelText: 'Nova senha',
+                    ),
+                    obscureText: true,
+                  ))
+            ])),
+      )
+    ],
+  ));
 }
 
 _chamarFormulario(BuildContext context) {
