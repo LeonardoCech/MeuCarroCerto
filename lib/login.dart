@@ -162,63 +162,66 @@ class _MyHomePageState extends State<MyHomePage> {
                                       enableSuggestions: false,
                                       autocorrect: false,
                                     ))),
-                            Container(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0),
-                              margin: const EdgeInsets.only(top: 40.0),
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromRGBO(255, 210, 84, 1),
-                                  padding: const EdgeInsets.only(
-                                      top: 18.0,
-                                      right: 98.0,
-                                      bottom: 18.0,
-                                      left: 98.0),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                ),
-                                onPressed: () async {
+                              GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    padding: const EdgeInsets.only(right: 40.0, left: 40.0),
+                                    margin:
+                                    const EdgeInsets.only(top: 20.0),
+                                    child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor:
+                                          const Color.fromRGBO(
+                                              255, 210, 84, 1),
+                                          padding: const EdgeInsets.only(
+                                              top: 18.0,
+                                              right: 98.0,
+                                              bottom: 18.0,
+                                              left: 98.0),
+                                          textStyle:
+                                          const TextStyle(fontSize: 20),
+                                        ),
+                                      onPressed: () async {
 
-                                  // Login para debug
-                                  emailCtrl.text = "leonardocech.dev@gmail.com";
-                                  passwordCtrl.text = "adminadmin";
-
-                                  loadingDialog();
-                                  try {
-                                    final credential = await FirebaseAuth
-                                        .instance
-                                        .signInWithEmailAndPassword(
-                                            email: emailCtrl.text,
-                                            password: passwordCtrl.text);
-                                    if (kDebugMode) {
-                                      print(credential);
-                                    }
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pop(result);
-                                    _chamarHome(context);
-                                  } on FirebaseAuthException catch (e) {
-                                    if (e.code == 'user-not-found') {
-                                      if (kDebugMode) {
-                                        print('No user found for that email.');
-                                      }
-                                    } else if (e.code == 'wrong-password') {
-                                      if (kDebugMode) {
-                                        print(
-                                            'Wrong password provided for that user.');
-                                      }
-                                    }
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pop(result);
-                                    loginFailedDialog();
-                                  }
-                                },
-                                child: const Expanded(
-                                  child: Text(
-                                    'Entrar',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
+                                        loadingDialog();
+                                        try {
+                                          final credential = await FirebaseAuth
+                                              .instance
+                                              .signInWithEmailAndPassword(
+                                              email: emailCtrl.text,
+                                              password: passwordCtrl.text);
+                                          if (kDebugMode) {
+                                            print(credential);
+                                          }
+                                          Navigator.of(context, rootNavigator: true)
+                                              .pop(result);
+                                          _chamarHome(context);
+                                        } on FirebaseAuthException catch (e) {
+                                          if (e.code == 'user-not-found') {
+                                            if (kDebugMode) {
+                                              print('No user found for that email.');
+                                            }
+                                          } else if (e.code == 'wrong-password') {
+                                            if (kDebugMode) {
+                                              print(
+                                                  'Wrong password provided for that user.');
+                                            }
+                                          }
+                                          Navigator.of(context, rootNavigator: true)
+                                              .pop(result);
+                                          loginFailedDialog();
+                                        }
+                                      },
+                                        child: Row(children: const [
+                                          Expanded(
+                                            child: Text(
+                                              'Entrar',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ])),
+                                  )),
                             Padding(
                                 padding: const EdgeInsets.only(top: 18.0),
                                 child: Column(

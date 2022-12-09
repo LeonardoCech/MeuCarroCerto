@@ -24,6 +24,8 @@ class Sobre extends StatelessWidget {
   }
 }
 
+final GlobalKey<ScaffoldState> _key = GlobalKey();
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -246,7 +248,7 @@ Widget userEdit(BuildContext context) {
 
   void loadingDialog() {
     showDialog(
-        // The user CANNOT close this dialog  by pressing outside it
+      // The user CANNOT close this dialog  by pressing outside it
         barrierDismissible: false,
         context: context,
         builder: (_) {
@@ -324,131 +326,179 @@ Widget userEdit(BuildContext context) {
 
   return Drawer(
       child: ListView(
-    padding: EdgeInsets.zero,
-    children: [
-      Card(
-        elevation: 10,
-        color: const Color.fromRGBO(255, 255, 255, 1),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
-        margin: const EdgeInsets.only(
-            top: 40.0, right: 15.0, bottom: 20.0, left: 15.0),
-        child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(children: [
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Configurações",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold),
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
-                child: TextFormField(
-                  controller: emailCtrl,
-                  style: const TextStyle(fontSize: 18),
-                  decoration: const InputDecoration(
-                    labelText: 'E-mail',
-                  ),
-                  enabled: false,
-                ),
-              ),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Edite suas informações de usuário:",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
-                    textAlign: TextAlign.justify,
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: TextFormField(
-                  controller: fullnameCtrl,
-                  style: const TextStyle(fontSize: 18),
-                  decoration: const InputDecoration(
-                    labelText: 'Nome completo',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
-                    padding: const EdgeInsets.all(18.0),
-                  ),
-                  onPressed: () {
-                    final user = <String, dynamic>{
-                      "email": emailCtrl.text,
-                      "fullname": fullnameCtrl.text,
-                    };
-                    loadingDialog();
-                    db
-                        .collection("users")
-                        .doc(userDocId)
-                        .update(user)
-                        .then((value) => {successUpdateDialog()});
-                    Navigator.of(context, rootNavigator: true).pop(result);
-                  },
-                  child: const Expanded(
-                    child: Text(
-                      'Atualizar meu usuário',
-                      style: TextStyle(fontSize: 15, color: Colors.lightBlue),
+        padding: EdgeInsets.zero,
+        children: [
+          Card(
+            elevation: 10,
+            color: const Color.fromRGBO(255, 255, 255, 1),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            margin: const EdgeInsets.only(
+                top: 40.0, right: 15.0, bottom: 20.0, left: 15.0),
+            child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(children: [
+                  const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Configurações",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 23,
+                            fontWeight: FontWeight.bold),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                    child: TextFormField(
+                      controller: emailCtrl,
+                      style: const TextStyle(fontSize: 18),
+                      decoration: const InputDecoration(
+                        labelText: 'E-mail',
+                      ),
+                      enabled: false,
                     ),
                   ),
-                ),
-              ),
-              const Divider(color: Colors.grey),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Outrras ações:",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
-                    textAlign: TextAlign.justify,
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
-                    padding: const EdgeInsets.all(23.0),
-                  ),
-                  onPressed: () {
-                    _chamarSobre(context);
-                  },
-                  child: const Expanded(
-                    child: Text(
-                      'Quem Somos?',
-                      style: TextStyle(fontSize: 15, color: Colors.lightBlue),
+                  const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Edite suas informações de usuário:",
+                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        textAlign: TextAlign.justify,
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: TextFormField(
+                      controller: fullnameCtrl,
+                      style: const TextStyle(fontSize: 18),
+                      decoration: const InputDecoration(
+                        labelText: 'Nome completo',
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                  GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        //padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                        margin: const EdgeInsets.only(top: 20.0),
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                              const Color.fromRGBO(240, 240, 240, 1),
+                              textStyle: const TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              final user = <String, dynamic>{
+                                "email": emailCtrl.text,
+                                "fullname": fullnameCtrl.text,
+                              };
+                              loadingDialog();
+                              db
+                                  .collection("users")
+                                  .doc(userDocId)
+                                  .update(user)
+                                  .then((value) => {successUpdateDialog()});
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop(result);
+                            },
+                            child: Row(children: const [
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Atualizar meu usuário',
+                                    style: TextStyle(color: Colors.lightBlue),
+                                  ),
+                                ),
+                              ),
+                            ])),
+                      )),
+                  const Divider(color: Colors.grey),
+                  const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Outras ações:",
+                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        textAlign: TextAlign.justify,
+                      )),
+                  GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        //padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                        margin: const EdgeInsets.only(top: 20.0),
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                              const Color.fromRGBO(240, 240, 240, 1),
+                              textStyle: const TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              _chamarSobre(context);
+                            },
+                            child: Row(children: const [
+                              Expanded(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Quem somos?',
+                                      style: TextStyle(color: Colors.lightBlue),
+                                    ),)
+                              ),
+                            ])),
+                      )),
+                  GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        //padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+                        margin: const EdgeInsets.only(top: 20.0),
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                              const Color.fromRGBO(240, 240, 240, 1),
+                              textStyle: const TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              confirmDialog(context);
+                            },
+                            child: Row(children: const [
+                              Expanded(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Excluir conta',
+                                      style: TextStyle(color: Colors.redAccent),
+                                    ),)
+                              ),
+                            ])),
+                      ))
+                ])),
+          ),
+          GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.only(right: 40.0, left: 40.0),
+                margin: const EdgeInsets.only(top: 20.0),
                 child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
-                    padding: const EdgeInsets.all(23.0),
-                  ),
-                  onPressed: () {
-                    confirmDialog(context);
-                  },
-                  child: const Expanded(
-                    child: Text(
-                      'Excluir conta',
-                      style: TextStyle(fontSize: 15, color: Colors.redAccent),
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(255, 210, 84, 1),
+                      textStyle: const TextStyle(fontSize: 20),
                     ),
-                  ),
-                ),
-              ),
-            ])),
-      )
-    ],
-  ));
+                    onPressed: () async {
+                      _key.currentState!.closeEndDrawer();
+                    },
+                    child: Row(children: const [
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Voltar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ])),
+              ))
+        ],
+      ));
 }
 
 _chamarHome(BuildContext context) {
