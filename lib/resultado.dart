@@ -3,6 +3,10 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meu_carro_certo/quemsomos.dart';
+
+import 'home.dart';
+import 'login.dart';
 
 class Resultado extends StatelessWidget {
   const Resultado({Key? key}) : super(key: key);
@@ -31,8 +35,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 final emailCtrl = TextEditingController(),
-    nameCtrl = TextEditingController(),
+    fullnameCtrl = TextEditingController(),
     passwordCtrl = TextEditingController();
+
+String userDocId = "";
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -44,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
     double maxWidth = queryData.size.width < 500 ? queryData.size.width : 500;
+
 
     return Scaffold(
         appBar: AppBar(
@@ -59,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ]),
         key: _key,
-        endDrawer: userEdit(),
+        endDrawer: userEdit(context),
         body: Container(
             width: maxWidth,
             decoration: const BoxDecoration(
@@ -85,15 +92,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             top: 40.0, right: 20.0, bottom: 20.0, left: 20.0),
                         child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Column(children: const [
+                            child: Column(children: [
                               Text(
-                                "Raking do seu carro certo",
-                                style: TextStyle(
+                                "${fullnameCtrl.text}, aqui está o raking do seu carro certo",
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 23,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
+                              const Text(
                                 "De acordo com as questões respondidas, esses foram os três carros selecionados para você.",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
@@ -115,15 +122,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
-                              Image.asset("assets/images/unknown-car.jpg"),
+                              Image.network('https://img0.icarros.com/dbimg/galeriaimgmodelo/2/36263_1.jpg'),
                               const Text(
-                                "Celta 1.0 LT - 2011/2012 - Branco - Alcool/Gasolina - 78CV/1000.",
+                                "Gol City 1.0 Total Flex 12v (2017)",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
                               const Text(
-                                "De R\$ 25.000,00 a R\$35.000",
+                                "Fipe: R\$ 35.029,00",
                                 style: TextStyle(fontSize: 14),
                               ),
                             ]),
@@ -142,15 +149,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 20),
                                 ),
-                                Image.asset("assets/images/unknown-car.jpg"),
+                                Image.network('https://img1.icarros.com/dbimg/galeriaimgmodelo/7/11728_1.jpg'),
                                 const Text(
-                                  "Tesla-Model-S-2021-5",
+                                  "COBALT ADVANTAGE 1.4 (2014)",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 const Text(
-                                  "De R\$ 25.000,00 a R\$35.000",
+                                  "Fipe: R\$ 43.913,00",
                                   style: TextStyle(fontSize: 14),
                                 ),
                               ])),
@@ -168,15 +175,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
-                              Image.asset("assets/images/unknown-car.jpg"),
+                              Image.network('https://img1.icarros.com/dbimg/galeriaimgmodelo/2/3736_1.jpg'),
                               const Text(
-                                "Tesla-Model-S-2021-5",
+                                "Fusion 2.5 16V Aut. (Híbrido) (2012)",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
                               const Text(
-                                "De R\$ 25.000,00 a R\$35.000",
+                                "Fipe: R\$ 49.664,00",
                                 style: TextStyle(fontSize: 14),
                               ),
                             ]),
@@ -189,24 +196,111 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Widget userEdit() {
+Widget userEdit(BuildContext context) {
   final currUserEmail = FirebaseAuth.instance.currentUser?.email;
+
   var db = FirebaseFirestore.instance;
 
   emailCtrl.text = currUserEmail!;
-  Future<QuerySnapshot<Map<String, dynamic>>> snapshot =
-      db.collection("users").where("email", isEqualTo: currUserEmail).get();
 
-  /*for (var doc in snapshot.data!.docs) {
-    print(doc.data() as Map<String, dynamic>);
-  }*/
+  Future<void> getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await db
+        .collection("users")
+        .where("email", isEqualTo: currUserEmail)
+        .get();
+
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    Map<String, dynamic> result = allData.first as Map<String, dynamic>;
+    fullnameCtrl.text = result['fullname'];
+
+    userDocId = querySnapshot.docs.map((doc) => doc.id).single;
+  }
+
+  getData();
+
+  void loadingDialog() {
+    showDialog(
+        // The user CANNOT close this dialog  by pressing outside it
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Some text
+                  Text('Aguarde...')
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void successUpdateDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Sucesso!'),
+        content: const Text('O usuário foi atualizado :)'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void confirmDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: const Text("Cancelar"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop(result);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Confirmar", style: TextStyle(color: Colors.redAccent)),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop(result);
+        FirebaseAuth.instance.currentUser!.delete();
+        db.collection("users").doc(userDocId).delete();
+        _chamarLogin(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Atenção!", style: TextStyle(color: Colors.redAccent)),
+      content: const Text("Tem certeza que devemos remover seu usuário?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
 
   return Drawer(
-      // Add a ListView to the drawer. This ensures the user can scroll
-      // through the options in the drawer if there isn't enough vertical
-      // space to fit everything.
       child: ListView(
-    // Important: Remove any padding from the ListView.
     padding: EdgeInsets.zero,
     children: [
       Card(
@@ -215,7 +309,7 @@ Widget userEdit() {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0))),
         margin: const EdgeInsets.only(
-            top: 20.0, right: 15.0, bottom: 20.0, left: 15.0),
+            top: 40.0, right: 15.0, bottom: 20.0, left: 15.0),
         child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
@@ -225,9 +319,20 @@ Widget userEdit() {
                     "Configurações",
                     style: TextStyle(
                         color: Colors.black,
-                        fontSize: 18,
+                        fontSize: 23,
                         fontWeight: FontWeight.bold),
                   )),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                child: TextFormField(
+                  controller: emailCtrl,
+                  style: const TextStyle(fontSize: 18),
+                  decoration: const InputDecoration(
+                    labelText: 'E-mail',
+                  ),
+                  enabled: false,
+                ),
+              ),
               const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -238,36 +343,103 @@ Widget userEdit() {
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
                 child: TextFormField(
-                  controller: nameCtrl,
-                  style: const TextStyle(fontSize: 14),
+                  controller: fullnameCtrl,
+                  style: const TextStyle(fontSize: 18),
                   decoration: const InputDecoration(
                     labelText: 'Nome completo',
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: TextFormField(
-                  controller: emailCtrl,
-                  style: const TextStyle(fontSize: 14),
-                  decoration: const InputDecoration(
-                    labelText: 'E-mail',
+                padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
+                    padding: const EdgeInsets.all(18.0),
                   ),
-                  enabled: false,
+                  onPressed: () {
+                    final user = <String, dynamic>{
+                      "email": emailCtrl.text,
+                      "fullname": fullnameCtrl.text,
+                    };
+                    loadingDialog();
+                    db
+                        .collection("users")
+                        .doc(userDocId)
+                        .update(user)
+                        .then((value) => {successUpdateDialog()});
+                    Navigator.of(context, rootNavigator: true).pop(result);
+                  },
+                  child: const Expanded(
+                    child: Text(
+                      'Atualizar meu usuário',
+                      style: TextStyle(fontSize: 15, color: Colors.lightBlue),
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(color: Colors.grey),
+              const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Outras ações:",
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                    textAlign: TextAlign.justify,
+                  )),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
+                    padding: const EdgeInsets.all(23.0),
+                  ),
+                  onPressed: () {
+                    _chamarSobre(context);
+                  },
+                  child: const Expanded(
+                    child: Text(
+                      'Quem Somos?',
+                      style: TextStyle(fontSize: 15, color: Colors.lightBlue),
+                    ),
+                  ),
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: TextFormField(
-                    controller: passwordCtrl,
-                    style: const TextStyle(fontSize: 14),
-                    decoration: const InputDecoration(
-                      labelText: 'Nova senha',
+                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(240, 240, 240, 0.8),
+                    padding: const EdgeInsets.all(23.0),
+                  ),
+                  onPressed: () {
+                    confirmDialog(context);
+                  },
+                  child: const Expanded(
+                    child: Text(
+                      'Excluir conta',
+                      style: TextStyle(fontSize: 15, color: Colors.redAccent),
                     ),
-                    obscureText: true,
-                  ))
+                  ),
+                ),
+              ),
             ])),
       )
     ],
   ));
+}
+
+_chamarLogin(BuildContext context) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Login(),
+      ));
+}
+
+_chamarSobre(BuildContext context) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Sobre(),
+      ));
 }

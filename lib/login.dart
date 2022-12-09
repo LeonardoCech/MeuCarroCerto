@@ -177,6 +177,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   textStyle: const TextStyle(fontSize: 20),
                                 ),
                                 onPressed: () async {
+
+                                  // Login para debug
+                                  emailCtrl.text = "leonardocech.dev@gmail.com";
+                                  passwordCtrl.text = "adminadmin";
+
                                   loadingDialog();
                                   try {
                                     final credential = await FirebaseAuth
